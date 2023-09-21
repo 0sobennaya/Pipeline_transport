@@ -14,10 +14,10 @@ Pipe Add_pipe() {
 	std::cout << "Add the pipe name\n";
 	std::getline(std::cin, pipe.pipe_name);
 
-	std::cout << "Add the pipe length\n";
+	std::cout << "Add the pipe length(km)\n";
 	pipe.pipe_length = Check_enter(1.0, 1000.0);
 
-	std::cout << "Add the pipe diameter\n";
+	std::cout << "Add the pipe diameter(mm)\n";
 	pipe.pipe_diameter = Check_enter(10, 5000);
 
 	std::cout << "Add the pipe status (1 - works, 0 - in repair)\n";
@@ -39,14 +39,18 @@ void Show_pipe(Pipe pipe) {
 	}
 }
 void Edit_pipe(Pipe& pipe) {
-	std::cout << "The pipe status (1 - works, 0 - in repair):  " << pipe.repair;
+	if (pipe.pipe_length != -1){
+		std::cout << "The pipe status (1 - works, 0 - in repair):  " << pipe.repair;
 	std::cout << "\nDo you want to change the pipe status? (1 - yes, 0 - no)\n";
 	int choice;
 	choice = Check_enter(0, 1);
 	if (choice == 1) {
 		pipe.repair = !pipe.repair;
 	}
-	std::cout << "New pipe status (1 - works, 0 - in repair):  " << pipe.repair << "\n";
+	std::cout << "New pipe status (1 - works, 0 - in repair):  " << pipe.repair << "\n"; }
+	else {
+		std::cout << "Erorr: there is no pipe to edit\n";
+	}
 }
 void Save_pipe(Pipe& pipe) {
 	if (pipe.pipe_length != -1) {
@@ -87,7 +91,7 @@ void Load_pipe(Pipe& pipe) {
 			file.close();
 			std::cout << "The pipe was successfully loaded\n";
 		}
-		file.close();
+		//file.close();
 	}
 	
 }

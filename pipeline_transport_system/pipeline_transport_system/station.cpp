@@ -36,20 +36,25 @@ void Show_station(Station station) {
 	}
 }
 void Edit_station(Station& station) {
-	int start_stop;
-	std::cout << "The number of workshops in work is " << station.num_workshop_in_work;
-	std::cout << "\nIf you want to start the workshop press 1, stop - 0" << "\n";
-	start_stop = Check_enter(0,1);
-	if (station.num_workshop_in_work >= 1 && start_stop == 0) {
-		station.num_workshop_in_work--;
-	}
-	else if (station.num_workshop_in_work < station.num_workshop && start_stop == 1) {
-		station.num_workshop_in_work++;
+	if ((station.num_workshop != -1)) {
+		int start_stop;
+		std::cout << "The number of workshops in work is " << station.num_workshop_in_work;
+		std::cout << "\nIf you want to start the workshop press 1, stop - 0" << "\n";
+		start_stop = Check_enter(0, 1);
+		if (station.num_workshop_in_work >= 1 && start_stop == 0) {
+			station.num_workshop_in_work--;
+		}
+		else if (station.num_workshop_in_work < station.num_workshop && start_stop == 1) {
+			station.num_workshop_in_work++;
+		}
+		else {
+			std::cout << "Error, you cannot start/stop one more workshop\n";
+		}
+		std::cout << "Now the number of workshops in work is " << station.num_workshop_in_work << "\n";
 	}
 	else {
-		std::cout << "Error, you cannot start/stop one more workshop\n";
+		std::cout << "Erorr: there is no station to edit\n";
 	}
-	std::cout << "Now the number of workshops in work is " << station.num_workshop_in_work << "\n";
 }
 void Save_station(Station& station) {
 	if (station.num_workshop != -1) {

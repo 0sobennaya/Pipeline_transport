@@ -21,7 +21,7 @@ void print_menu() {
 }
 
 int get_variant() {
-	int variant = Check_enter(0, 9);
+	int variant = Check_enter(0, 7);
 	return variant;
 }
 
