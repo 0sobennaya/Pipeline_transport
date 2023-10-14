@@ -1,12 +1,13 @@
 ﻿#include <iostream>
+#include <fstream>
+#include <string>
+
 #include "pipe.h"
-#include"station.h"
+#include "station.h"
 #include "Utilities.h"
 
 
 void print_menu() {
-
-	system("cls");
 	std::cout << "Choose an action:\n";
 	std::cout << "-----------------------\n";
 	std::cout << "1. Add the pipe\n";
@@ -20,9 +21,51 @@ void print_menu() {
 	std::cout << ">\n";
 }
 
-int get_variant() {
-	int variant = Check_enter(0, 7);
-	return variant;
+void Save(Pipe& pipe, Station& station) {
+	std::ofstream file("data.txt");
+	if (!file) {
+		std::cout << "Error";
+		return;
+	}
+	if (pipe.Has_pipe()) {
+		file << "PIPES" << "\n";
+		pipe.Import_pipe(file);
+	}
+	if (station.Has_station()) {	
+		file << "STATIONS" << "\n";
+		station.Import_station(file);
+	}
+	file << "END";
+
+	file.close();
+}
+
+void Load(Pipe& pipe, Station& station) {
+	std::ifstream file("data.txt");
+	std::string s = ""; std::getline(file, s);
+	if ( s!= "END") {
+		for (s; s != "END"; std::getline(file, s)) {
+			if (file.eof()) {
+				std::cout << "Error\n";
+				return;
+			}
+			if (s == "") {
+				continue;
+			}
+			if (s == "PIPES") {
+				pipe.Export_pipe(file);
+			}
+			if (s == "STATIONS") {
+				station.Export_station(file);
+			}
+
+		}
+	}
+	else {
+		std::cout << "Error\n";
+	}
+
+	file.close();
 }
 
 
@@ -31,70 +74,36 @@ int main()
 	int variant;
 	Pipe pipe;
 	Station station;
-	int var_save;
-	int var_load;
-
+	
 	do {
 		print_menu();
-		variant = get_variant();
+
+		variant = Check_enter(0, 7);
 
 		switch (variant) {
 		case 1:
-			pipe = Add_pipe();
+			pipe.Add_pipe();
 			break;
 		case 2:
-			station = Add_station();
+			station.Add_station();
 			break;
 		case 3:
-
-			Show_pipe(pipe);      
-			Show_station(station);
+			pipe.Show_pipe();      
+			station.Show_station();
 			break;
 		case 4:
-			Edit_pipe(pipe);
+			pipe.Edit_pipe();
 			break;
 		case 5:
-			Edit_station(station);
+			station.Edit_station();
 			break;
 		case 6:
-			std::cout << "Press 1 to save the pipe, 2 - to save the station, 3 - to save all\n";
-			var_save = Check_enter(1, 3);
-			switch (var_save)
-			{ case 1:
-				Save_pipe(pipe);
-				break;
-			case 2:
-				Save_station(station);
-				break;
-			case 3:
-				Save_pipe(pipe);
-				Save_station(station);
-				break;
-			}
+			Save(pipe, station);
 			break;
 		case 7:
-			std::cout << "Press 1 to load the pipe, 2 - to load the station, 3 - to load all\n";
-			var_load = Check_enter(1, 3);
-			switch (var_load)
-			{
-			case 1:
-				Load_pipe(pipe);
-				break;
-			case 2:
-				Load_station(station);
-				break;
-			case 3:
-				Load_pipe(pipe);
-				Load_station(station);
-				break;
-			}
+			Load(pipe, station);
 			break;
 		}
-
-		if (variant != 0) {
-			system("pause");
-		}
-	
 	} while (variant != 0);
 	return 0;
 }

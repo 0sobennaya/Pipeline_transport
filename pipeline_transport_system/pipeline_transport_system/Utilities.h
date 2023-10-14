@@ -1,4 +1,6 @@
+#pragma once
 #include <iostream>
+#include <string>
 
 template <typename Type>
 Type Check_enter(Type low, Type high) {
@@ -12,3 +14,8 @@ Type Check_enter(Type low, Type high) {
 	}
 	return x;
 }
+
+
+
+
+

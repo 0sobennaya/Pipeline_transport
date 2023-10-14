@@ -37,10 +37,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="pipe.txt">
-      <Filter>Файлы ресурсов</Filter>
-    </Text>
-    <Text Include="station.txt">
+    <Text Include="data.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
   </ItemGroup>
