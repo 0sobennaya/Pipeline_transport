@@ -1,35 +1,41 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <vector>
 
 #include "Utilities.h"
 #include "pipe.h"
 
-void Pipe::Add_pipe() {
+int Pipe::MAXID = 0;
 
-	std::cout << "Add the pipe name\n";
-	std::cin >> std::ws;
-	std::getline(std::cin, pipe_name);
-
-	std::cout << "Add the pipe length(km)\n";
-	pipe_length = Check_enter(1.0, 1000.0);
-
-	std::cout << "Add the pipe diameter(mm)\n";
-	pipe_diameter = Check_enter(10, 5000);
-
-	std::cout << "Add the pipe status (1 - works, 0 - in repair)\n";
-	repair = Check_enter(0, 1);
+Pipe::Pipe() {
+	id = MAXID++;
 }
 
-void Pipe::Show_pipe() {
-	if (Has_pipe()) {
-		std::cout << "Pipe name:                               " << pipe_name << '\n';
-		std::cout << "Pipe length:                             " << pipe_length << '\n';
-		std::cout << "Pipe diameter:                           " << pipe_diameter << '\n';
-		std::cout << "Pipe status (1 - works, 0 - in repair):  " << repair << '\n';
-	}
-	else {
-		std::cout << "There is no pipe";
+Pipe Add_pipe() {
+	Pipe pipe;
+	std::cout << "Add the pipe name\n";
+	std::cin >> std::ws;
+	std::getline(std::cin, pipe.pipe_name);
+
+	std::cout << "Add the pipe length(km)\n";
+	pipe.pipe_length = Check_enter(1.0, 1000.0);
+
+	std::cout << "Add the pipe diameter(mm)\n";
+	pipe.pipe_diameter = Check_enter(10, 5000);
+
+	std::cout << "Add the pipe status (1 - works, 0 - in repair)\n";
+	pipe.repair = Check_enter(0, 1);
+	return pipe;
+}
+
+void Show_pipes(std::vector<Pipe>& pipes) {
+	for (Pipe pipe : pipes) {
+		std::cout << "ID:                                      " << pipe.getId() << "\n";
+		std::cout << "Pipe name:                               " << pipe.pipe_name << "\n";
+		std::cout << "Pipe length:                             " << pipe.pipe_length << "\n";
+		std::cout << "Pipe diameter:                           " << pipe.pipe_diameter << "\n";
+		std::cout << "Pipe status (1 - works, 0 - in repair):  " << pipe.repair << "\n\n" ;
 	}
 }
 
@@ -61,5 +67,3 @@ void Pipe::Export_pipe(std::istream& in) {
 	std::getline(in, pipe_name);
 	in >> pipe_length >> pipe_diameter >> repair;
 }
-
-	

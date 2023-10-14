@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include "pipe.h"
 #include "station.h"
@@ -21,6 +22,8 @@ void print_menu() {
 	std::cout << ">\n";
 }
 
+
+
 void Save(Pipe& pipe, Station& station) {
 	std::ofstream file("data.txt");
 	if (!file) {
@@ -38,6 +41,24 @@ void Save(Pipe& pipe, Station& station) {
 	file << "END";
 
 	file.close();
+}
+
+void View_all(std::vector<Pipe>& pipes, std::vector<Station>& stations) {
+	std::cout << "\tPipes\n";
+	if (pipes.size() != 0) {
+		Show_pipes(pipes);
+	}
+	else {
+		std::cout << "there is no pipes\n";
+	}
+
+	std::cout << "\tStations\n";
+	if (stations.size() != 0) {
+		Show_stations(stations);
+	}
+	else {
+		std::cout << "there is no stations\n";
+	}
 }
 
 void Load(Pipe& pipe, Station& station) {
@@ -72,8 +93,8 @@ void Load(Pipe& pipe, Station& station) {
 int main()
 {
 	int variant;
-	Pipe pipe;
-	Station station;
+	std::vector<Pipe> pipes;
+	std::vector<Station> stations;
 	
 	do {
 		print_menu();
@@ -82,26 +103,25 @@ int main()
 
 		switch (variant) {
 		case 1:
-			pipe.Add_pipe();
+			pipes.push_back(Add_pipe());
 			break;
 		case 2:
-			station.Add_station();
+			stations.push_back(Add_station());
 			break;
 		case 3:
-			pipe.Show_pipe();      
-			station.Show_station();
+			View_all(pipes, stations);
 			break;
 		case 4:
-			pipe.Edit_pipe();
+			//pipe.Edit_pipe();
 			break;
 		case 5:
-			station.Edit_station();
+			//station.Edit_station();
 			break;
 		case 6:
-			Save(pipe, station);
+			//Save(pipe, station);
 			break;
 		case 7:
-			Load(pipe, station);
+			//Load(pipe, station);
 			break;
 		}
 	} while (variant != 0);
