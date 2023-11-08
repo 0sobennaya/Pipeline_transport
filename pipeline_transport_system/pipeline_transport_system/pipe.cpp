@@ -3,52 +3,40 @@
 #include <fstream>
 #include <vector>
 
-#include "Utilities.h"
+#include "utilities.h"
 #include "pipe.h"
 
-int Pipe::MAXID = 0;
-
-Pipe::Pipe() {
-	id = MAXID++;
-}
-
-Pipe Add_pipe() {
-	Pipe pipe;
+void Pipe::Add_pipe() {
 	std::cout << "Add the pipe name\n";
 	std::cin >> std::ws;
-	std::getline(std::cin, pipe.pipe_name);
+	std::getline(std::cin, _pipe_name);
 
 	std::cout << "Add the pipe length(km)\n";
-	pipe.pipe_length = Check_enter(1.0, 1000.0);
+	pipe_length = Check_enter(1.0, 1000.0);
 
 	std::cout << "Add the pipe diameter(mm)\n";
-	pipe.pipe_diameter = Check_enter(10, 5000);
+	pipe_diameter = Check_enter(10, 5000);
 
 	std::cout << "Add the pipe status (1 - works, 0 - in repair)\n";
-	pipe.repair = Check_enter(0, 1);
-	return pipe;
+	status = Check_enter(0, 1);
 }
 
-void Show_pipes(std::vector<Pipe>& pipes) {
-	for (Pipe pipe : pipes) {
-		std::cout << "ID:                                      " << pipe.getId() << "\n";
-		std::cout << "Pipe name:                               " << pipe.pipe_name << "\n";
-		std::cout << "Pipe length:                             " << pipe.pipe_length << "\n";
-		std::cout << "Pipe diameter:                           " << pipe.pipe_diameter << "\n";
-		std::cout << "Pipe status (1 - works, 0 - in repair):  " << pipe.repair << "\n\n" ;
-	}
+void Pipe::Print_pipe() {
+	std::cout << "Pipe name:                               " << _pipe_name << "\n";
+	std::cout << "Pipe length:                             " << pipe_length << "\n";
+	std::cout << "Pipe diameter:                           " << pipe_diameter << "\n";
+	std::cout << "Pipe status (1 - works, 0 - in repair):  " << status << "\n\n" ;
 }
 
 bool Pipe::Has_pipe() {
 	return (pipe_length != -1) ? true : false;
 }
 
-
 void Pipe::Edit_pipe() {
 	if (Has_pipe()){
 		std::cout << "\nDo you want to change the pipe status? (1 - yes, 0 - no)\n";
 			if (Check_enter(0, 1) == 1) {
-				repair = !repair;
+				status = !status;
 			}
 	}
 	else {
@@ -57,13 +45,14 @@ void Pipe::Edit_pipe() {
 }
 
 void Pipe::Import_pipe(std::ostream& out) {
-	out << pipe_name << "\n"
+	out	<< _pipe_name << "\n"
 		<< pipe_length << "\n"
 		<< pipe_diameter << "\n"
-		<< repair << "\n";
+		<< status << "\n";
 }
 
-void Pipe::Export_pipe(std::istream& in) {
-	std::getline(in, pipe_name);
-	in >> pipe_length >> pipe_diameter >> repair;
+void Pipe::Export_pipe(std::ifstream& in) {
+	in.ignore(1000, '\n');
+	std::getline(in, _pipe_name);
+	in >> pipe_length >> pipe_diameter >> status;
 }

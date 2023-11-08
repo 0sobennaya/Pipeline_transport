@@ -1,36 +1,36 @@
 #pragma once
 #include <iostream>
-#include <vector>
+#include <unordered_map>
 
 class Pipe {
 	
 
 public:
 
-	static int MAXID;
-
-	std::string pipe_name = "";
 	double pipe_length = -1;
 	int pipe_diameter = 0;
-	bool repair = false;
+	bool status = false;
 
-	Pipe();
 	bool Has_pipe();
+
+	void Add_pipe();
 	
 	void Edit_pipe();
 	void Import_pipe(std::ostream& out);
-	void Export_pipe(std::istream& in);
+	void Export_pipe(std::ifstream& in);
+	void Print_pipe();
 
+	const std::string getName() const {
+		return _pipe_name;
+	}
 
-	int getId() {
-		return id;
+	void setName(std::string name) {
+		_pipe_name = name;
 	}
 	
 private:
-	int id;
+	std::string _pipe_name;
 
 };
 
-Pipe Add_pipe();
-void Show_pipes(std::vector<Pipe>& pipes);
 
