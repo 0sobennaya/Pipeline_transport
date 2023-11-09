@@ -63,17 +63,11 @@ void App::Save() {
 
 	file.close();
 }
-                                                                                                        
-
-
-
-
-
 
 void App::Load(){
 	std::ifstream file(get_filename());
 	if (!file) {
-		std::cout << "Error" << std::endl;
+		std::cout << "Error: no file" << std::endl;
 		return;
 	}
 	std::string s = ""; 
@@ -81,7 +75,7 @@ void App::Load(){
 		for (s; s != "END"; std::getline(file, s)) {
 			unsigned int id = 0;
 			if (file.eof()) {
-				std::cout << "Error\n";
+				std::cout << "Error: file is empty\n";
 				return;
 			}
 			if (s == "") {
@@ -102,7 +96,7 @@ void App::Load(){
 				_StationID = std::max(_StationID, id) + 1;
 			}
 			else {
-				std::cout<<"error"<<std::endl;
+				std::cout<<"Unexpected error"<<std::endl;
 			}
 		}
 	}
@@ -117,4 +111,68 @@ void App::Load(){
 
 bool App::Data_emptpy() {
 	return (_pipes.empty() && _stations.empty());
+}
+
+
+Pipe& App::getPipeByID(int id) {
+	auto it = _pipes.find(id);
+	if (it == _pipes.end()) {
+		std::cout << "Error: pipe is not found" << std::endl;
+	}
+	return it->second;
+}
+
+Station& App::getStationByID(int id) {
+	auto it = _stations.find(id);
+	if (it == _stations.end()) {
+		std::cout << "Error: station is not found" << std::endl;
+	}
+	return it->second;
+}
+
+void App::Delete_pipe(int id) {
+	auto it = _pipes.find(id);
+	if (it == _pipes.end()) {
+		std::cout << "Error: pipe is not found" << std::endl;
+		return;
+	}
+	_pipes.erase(it);
+}
+
+void App::Delete_station(int id) {
+	auto it = _stations.find(id);
+	if (it == _stations.end()) {
+		std::cout << "Error: station is not found" << std::endl;
+		return;
+	}
+	_stations.erase(it);
+}
+
+std::vector<int> App::Search_by_status(bool status) {
+	std::vector<int> result;
+
+	for (const std::pair<int, Pipe> pair : _pipes) {
+		if (pair.second.getStatus() == status) {
+			result.push_back(pair.first);
+		}
+	}
+	return result;
+} 
+
+std::vector<int> App::Search_by_workshops(float low_percent, float high_percent) {
+	std::vector<int> result;
+	for (std::pair<int, Station> pair : _stations) {
+		float percent = getStationByID(pair.first).getNumWorkshopsInWork() * 100 / getStationByID(pair.first).getNumWorkshops();
+		if (percent >= low_percent && percent <= high_percent) {
+			result.push_back(pair.first);
+		}
+	}
+	return result;
+}
+
+const std::unordered_map<int, Pipe> App::getPipes() const {
+	return _pipes;
+}
+const std::unordered_map<int, Station> App::getStations() const {
+	return _stations;
 }

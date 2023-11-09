@@ -15,39 +15,20 @@ class App {
 
 		bool Data_emptpy();
 
-		Pipe getPipeByID(int id) {
-			auto it = _pipes.find(id);
-			if (it == _pipes.end()) {
-				std::cout << "Error" << std::endl;
-			}
-			return it->second;
-		}
+		Pipe& getPipeByID(int id);
+		Station& getStationByID(int id);
 
-		void Delete_pipe(int id) {
-			auto it = _pipes.find(id);
-			if (it == _pipes.end()) {
-				std::cout << "Error" << std::endl;
-				return;
-			}
-			_pipes.erase(it);
-		}
+		void Delete_pipe(int id);
+		void Delete_station(int id);
 
-		void Delete_station(int id) {
-			auto it = _stations.find(id);
-			if (it == _stations.end()) {
-				std::cout << "Error" << std::endl;
-				return;
-			}
-			_stations.erase(it);
-		}
+		std::vector<int> Search_by_status(bool status);
+		std::vector<int> Search_by_workshops(float low_percent, float high_percent);
 
-		const std::unordered_map<int, Pipe> getPipes() const {
-			return _pipes;
-		}
-		const std::unordered_map<int, Station> getStations() const {
-			return _stations;
-		}
 
+		const std::unordered_map<int, Pipe> getPipes() const;
+		const std::unordered_map<int, Station> getStations() const;
+
+		
 	private:
 		unsigned int _PipeID = 0;
 		unsigned int _StationID = 0;

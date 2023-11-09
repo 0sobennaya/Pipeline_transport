@@ -18,8 +18,8 @@ Type Check_enter(Type low, Type high) {
 	return x;
 }
 
-template <typename T>
-std::vector<int> Search_by_id(std::unordered_set<int>& ids, const std::unordered_map<int, T>& objects) {
+template <typename Type>
+std::vector<int> Search_by_id(std::unordered_set<int>& ids, const std::unordered_map<int, Type>& objects) {
 	std::vector<int> result;
 	for (int id : ids) {
 		if (objects.find(id) != objects.end()) {
@@ -29,12 +29,12 @@ std::vector<int> Search_by_id(std::unordered_set<int>& ids, const std::unordered
 	return result;
 }
 
-template <typename T>
-std::vector<int> Search_by_name(std::string& name, const std::unordered_map<int, T>& objects) {
+template <typename Type>
+std::vector<int> Search_by_name(std::string& name, const std::unordered_map<int, Type>& objects) {
 	std::vector<int> result;
 	std::string::size_type n;
 
-	for (const std::pair<int, T> pair : objects) {
+	for (const std::pair<int, Type> pair : objects) {
 		n = pair.second.getName().find(name);
 		if (std::string::npos != n) {
 			result.push_back(pair.first);

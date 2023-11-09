@@ -1,37 +1,37 @@
 PIPES
 0
-pipe
-10
-10
+pipe #1
+1345
+3436
 1
 PIPES
 1
-pipe1
-11
-11
-1
+pipe #2
+345.5
+230
+0
 PIPES
 2
-pipe2
-13
-13
+pipe #3
+1234
+789
 1
 STATIONS
 0
-station
-10
-10
-1
+station #1
+120
+40
+25.3
 STATIONS
 1
-station2
-11
-11
-1
+station #2
+89
+88
+99.9
 STATIONS
 2
-station3
-13
-13
+station #3
+454
 1
+0.05
 END
