@@ -6,7 +6,6 @@ class Pipe {
 	
 public:
 
-	bool Has_pipe();
 	void Add_pipe();
 	
 	void Import_pipe(std::ostream& out);

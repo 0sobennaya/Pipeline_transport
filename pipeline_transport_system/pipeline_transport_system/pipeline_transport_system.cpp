@@ -6,10 +6,14 @@
 #include <vector>
 #include <sstream>
 
+#include <chrono>
+#include <format>
+
 #include "app.h"
 #include "pipe.h"
 #include "station.h"
 #include "utilities.h"
+#include "log.h"
 
 void print_menu() {
 	std::cout << "Choose an action:\n";
@@ -62,7 +66,9 @@ std::unordered_set<int> Input_sequence() {
 	while (true) {
 		std::cin >> std::ws;
 		std::cin >> input;
+		std::cerr << input << " ";
 		if (input == "end") {
+			std::cerr << std::endl;
 			break;
 		}
 		std::istringstream ss(input);
@@ -99,7 +105,7 @@ void search_station_menu(App& app) {
 		std::string name;
 		std::cout << "Enter name: ";
 		std::cin.ignore(100, '\n');
-		std::getline(std::cin, name);
+		INPUT_LINE(std::cin, name);
 		result_id = Search_by_name(name, app.getStations());
 		break;
 	}
@@ -163,7 +169,7 @@ void search_pipe_menu(App& app) {
 		std::string name;
 		std::cout << "Enter name: ";
 		std::cin.ignore(100, '\n');
-		std::getline(std::cin, name);
+		INPUT_LINE(std::cin, name);
 		result_id = Search_by_name(name, app.getPipes());
 		break;
 	}
@@ -245,6 +251,13 @@ void Load_data(App& app) {
 
 int main()
 {
+
+	redirect_output_wrapper cerr_out(std::cerr);
+	std::string time = std::format("{:%d_%m_%Y %H_%M_%OS}", std::chrono::system_clock::now());
+	std::ofstream logfile("log_" + time + ".txt");
+	if (logfile){
+		cerr_out.redirect(logfile);
+	}
 	App app;
 	int variant;
 	using ID = int;

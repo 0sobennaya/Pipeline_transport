@@ -9,7 +9,7 @@ void Station::Add_station() {
 
 	std::cout << "Add the station name\n";
 	std::cin >> std::ws;
-	std::getline(std::cin, _station_name);
+	INPUT_LINE(std::cin, _station_name);
 
 	std::cout << "Add the number of workshops\n";
 	_num_workshop = Check_enter(1, 500);
@@ -27,10 +27,6 @@ void Station::Print_station() {
 	std::cout << "Number of workshops:                     " << _num_workshop << "\n";
 	std::cout << "Number of workshops in work:             " << _num_workshop_in_work << "\n";
 	std::cout << "Station efficiency:                      " << _station_efficiency << "\n\n";
-}
-
-bool Station::Has_station() {
-	return (_num_workshop != -1) ? true : false;
 }
 
 void Station::Import_station(std::ostream& out) {

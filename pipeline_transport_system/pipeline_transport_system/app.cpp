@@ -8,7 +8,7 @@
 std::string get_filename() {
 	std::string filename;
 	std::cout << "Enter filename (filename.txt): " << std::endl;
-	std::cin >> filename;
+	INPUT_LINE(std::cin, filename);
 	return filename;
 }
 

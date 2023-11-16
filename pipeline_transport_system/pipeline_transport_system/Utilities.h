@@ -5,6 +5,8 @@
 #include <unordered_set>
 #include <string>
 
+#include "log.h"
+
 template <typename Type>
 Type Check_enter(Type low, Type high) {
 	Type x;
@@ -15,6 +17,7 @@ Type Check_enter(Type low, Type high) {
 		std::cout << "Error, please, try again\n";
 		std::cin >> x;
 	}
+	std::cerr << x << std::endl;
 	return x;
 }
 
@@ -43,6 +46,4 @@ std::vector<int> Search_by_name(std::string& name, const std::unordered_map<int,
 
 	return result;
 }
-
-
 

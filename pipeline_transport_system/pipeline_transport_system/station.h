@@ -6,7 +6,6 @@ class Station {
 
 public:
 
-	bool Has_station();
 	void Add_station();
 
 	void Import_station(std::ostream& out);

@@ -9,7 +9,7 @@
 void Pipe::Add_pipe() {
 	std::cout << "Add the pipe name\n";
 	std::cin >> std::ws;
-	std::getline(std::cin, _pipe_name);
+	INPUT_LINE(std::cin, _pipe_name);
 
 	std::cout << "Add the pipe length(km)\n";
 	_pipe_length = Check_enter(1.0, 10000.0);
@@ -26,10 +26,6 @@ void Pipe::Print_pipe() {
 	std::cout << "Pipe length:                             " << _pipe_length << "\n";
 	std::cout << "Pipe diameter:                           " << _pipe_diameter << "\n";
 	std::cout << "Pipe status (1 - works, 0 - in repair):  " << _status << "\n\n" ;
-}
-
-bool Pipe::Has_pipe() {
-	return (_pipe_length != -1) ? true : false;
 }
 
 void Pipe::Import_pipe(std::ostream& out) {
