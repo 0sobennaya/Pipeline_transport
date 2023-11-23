@@ -79,20 +79,67 @@ std::unordered_set<int> Input_sequence() {
 	return ids;
 }
 
-void Delete_pipe_by_id(int id, App& app) {
-	app.Delete_pipe(id);
-}
 
 void Delete_station_by_id(int id, App& app) {
 	app.Delete_station(id);
 }
 
-std::vector<int> Search_pipe_by_status(bool status, App& app) {
-	return app.Search_by_status(status);
+void Search_station_by_workshops(App& app,std::vector<int>& result_id) {
+	float low_percent, high_percent;
+	std::cout << "Enter low percent: ";
+	low_percent = Check_enter(0.0, 100.0);
+	std::cout << "Enter high percent: ";
+	high_percent = Check_enter(low_percent, (float)100.0);
+	result_id = search_by_filter<Station>(app,
+		[low_percent, high_percent](const Station& station){
+			float percent = station.getNumWorkshopsInWork() * 100 / station.getNumWorkshops();
+			return (percent >= low_percent && percent <= high_percent); 
+		});
 }
 
-std::vector<int> Search_station_by_workshops(float low_percent, float high_percent, App& app) {
-	return app.Search_by_workshops(low_percent, high_percent);
+
+
+void Search_station_by_name(App& app, std::vector<int>& result_id) {
+	std::string name;
+	std::cout << "Enter name: ";
+	std::cin.ignore(100, '\n');
+	INPUT_LINE(std::cin, name);
+	result_id = search_by_filter<Station>(app,
+		[&name](const Station& station)
+		{return (station.getName().find(name) != std::string::npos); });
+}
+
+void Search_station_by_id(App& app, std::vector<int>& result_id) {
+	std::cout << "Enter a sequence ending with the word 'end'" << std::endl;
+	std::cout << "Ids: ";
+	std::unordered_set<int> ids = Input_sequence();
+	result_id = Search_by_id(ids, app.getStations());
+}
+
+void Print_stations(App& app, std::vector<int>& result_id) {
+	for (int id : result_id) {
+		Station station = app.getStationByID(id);
+		std::cout << "ID: " << id << std::endl;
+		station.Print_station();
+		std::cout << std::endl;
+	}
+}
+
+void Delete_stations_by_id(App& app, std::vector<int>& result_id) {
+	for (int id : result_id) {
+		Delete_station_by_id(id, app);
+	}
+}
+
+void Edit_stations(App& app, std::vector<int>& result_id) {
+	float percent;
+	std::cout << "Enter percent: ";
+	percent = Check_enter(0.0, 100.0);
+	for (int id : result_id) {
+		Station& station = app.getStationByID(id);
+		int new_number = station.getNumWorkshops() * percent / 100;
+		station.setNumWorkhopsInWork((int)new_number);
+	}
 }
 
 void search_station_menu(App& app) {
@@ -102,123 +149,141 @@ void search_station_menu(App& app) {
 
 	switch (option) {
 	case 1: {
-		std::string name;
-		std::cout << "Enter name: ";
-		std::cin.ignore(100, '\n');
-		INPUT_LINE(std::cin, name);
-		result_id = Search_by_name(name, app.getStations());
+		Search_station_by_name(app, result_id);
+		std::cout << "Found: " << result_id.size() << " objects" << std::endl;
 		break;
 	}
 	case 2:
-		float low_percent, high_percent;
-		std::cout << "Enter low percent: ";
-		low_percent = Check_enter(0.0, 100.0);
-		std::cout << "Enter high percent: ";
-		high_percent = Check_enter(low_percent, (float)100.0);
-		result_id = Search_station_by_workshops(low_percent, high_percent, app);
+		Search_station_by_workshops(app, result_id);
+		std::cout << "Found: " << result_id.size() << " objects" << std::endl;
 		break;
 	case 3: {
-		std::cout << "Enter a sequence ending with the word 'end'" << std::endl;
-		std::cout << "Ids: ";
-		std::unordered_set<int> ids = Input_sequence();
-		result_id = Search_by_id(ids, app.getStations());
+		Search_station_by_id(app, result_id);
+		std::cout << "Found: " << result_id.size() << " objects" << std::endl;
 		break;
+	}
+	case 0:
+	default: {
+		return;
 	}
 	}
 
-	std::cout << "Found: " << result_id.size() << " objects" << std::endl;
+	
 
 	do {
 		print_search_menu();
 		option = Check_enter(0, 3);
 		switch (option) {
 		case 1:
-			for (int id : result_id) {
-				Station station = app.getStationByID(id);
-				std::cout << "ID: " << id << std::endl;
-				station.Print_station();
-				std::cout << std::endl;
-			}
+			Print_stations(app, result_id);
 			break;
 		case 2:
-			for (int id : result_id) {
-				Delete_station_by_id(id, app);
-			}
+			Delete_stations_by_id(app, result_id);
 			return;
 		case 3:
-			float percent;
-			std::cout << "Enter percent: ";
-			percent = Check_enter(0.0, 100.0);
-			for (int id : result_id) {
-				Station& station = app.getStationByID(id);
-				int new_number = station.getNumWorkshops() * percent / 100;
-				station.setNumWorkhopsInWork((int)new_number);
-			}
+			Edit_stations(app, result_id);
 			break;
 		}
 	} while (option != 0);
 }
 
+void Search_pipe_by_name(App& app, std::vector<int>& result_id) {
+	std::string name;
+	std::cout << "Enter name: ";
+	std::cin.ignore(100, '\n');
+	INPUT_LINE(std::cin, name);
+	result_id = search_by_filter<Pipe>(app,
+		[&name](const Pipe& pipe)
+		{return (pipe.getName().find(name) != std::string::npos); });
+}
+
+
+void Search_pipe_by_status(App& app, std::vector<int>& result_id) {
+	bool status;
+	std::cout << "Enter status ( 1 - work, 0 - in repair ): ";
+	status = Check_enter(0, 1);
+	result_id = search_by_filter<Pipe>(app,
+		[status](const Pipe& pipe)
+		{ return pipe.getStatus() == status; });
+}
+
+void Search_pipe_by_id(App& app, std::vector<int>& result_id){
+	std::cout << "Enter a sequence ending with the word 'end'" << std::endl;
+	std::cout << "Ids: ";
+	std::unordered_set<int> ids = Input_sequence();
+	result_id = Search_by_id(ids, app.getPipes());
+}
+
+void Print_pipes(App& app, std::vector<int>& result_id) {
+	for (int id : result_id) {
+		Pipe pipe = app.getPipeByID(id);
+		std::cout << "ID: " << id << std::endl;
+		pipe.Print_pipe();
+		std::cout << std::endl;
+	}
+}
+
+void Delete_pipes_by_id(App& app, std::vector<int>& result_id) {
+	for (int id : result_id) {
+		app.Delete_pipe(id);
+	}
+}
+
+void Edit_pipes(App& app, std::vector<int>& result_id) {
+	bool status;
+	std::cout << "Enter status ( 1 - works, 0 - in repair ): ";
+	status = Check_enter(0, 1);
+	for (int id : result_id) {
+		app.getPipeByID(id).setStatus(status);
+	}
+}
+
 void search_pipe_menu(App& app) {
+
 	print_pipe_search();
 	int option = Check_enter(0, 3);
 	std::vector<int> result_id;
 
 	switch (option) {
 	case 1: {
-		std::string name;
-		std::cout << "Enter name: ";
-		std::cin.ignore(100, '\n');
-		INPUT_LINE(std::cin, name);
-		result_id = Search_by_name(name, app.getPipes());
+		Search_pipe_by_name(app, result_id);
+		std::cout << "Found: " << result_id.size() << std::endl;
 		break;
 	}
 	case 2: {
-		bool status;
-		std::cout << "Enter status ( 1 - work, 0 - in repair ): ";
-		status = Check_enter(0, 1);
-		result_id = Search_pipe_by_status(status, app);
+		Search_pipe_by_status(app, result_id);
+		std::cout << "Found: " << result_id.size() << std::endl;
 		break;
 	}
 	case 3: {
-		std::cout << "Enter a sequence ending with the word 'end'" << std::endl;
-		std::cout << "Ids: ";
-		std::unordered_set<int> ids = Input_sequence();
-		result_id = Search_by_id(ids, app.getPipes());
+		Search_pipe_by_id(app, result_id);
+		std::cout << "Found: " << result_id.size() << " objects" << std::endl;
 		break;
+	}
+	case 0:
+	default: {
+		return;
 	}
 	}
 
-	std::cout << "Found: " << result_id.size() << std::endl;
+	
 
 	do {
 		print_search_menu();
 		option = Check_enter(0, 3);
 		switch (option) {
 		case 1:
-			for (int id : result_id) {
-				Pipe pipe = app.getPipeByID(id);
-				std::cout << "ID: " << id << std::endl;
-				pipe.Print_pipe();
-				std::cout << std::endl;
-			}
+			Print_pipes(app, result_id);
 			break;
 		case 2:
-			for (int id : result_id) {
-				Delete_pipe_by_id(id, app);
-			}
+			Delete_pipes_by_id(app, result_id);
 			return; 
 		case 3:
-			bool status;
-			std::cout << "Enter status ( 1 - works, 0 - in repair ): ";
-			status = Check_enter(0, 1);
-			for (int id : result_id) {
-				app.getPipeByID(id).setStatus(status);
-			}
+			Edit_pipes(app, result_id);
 			break;
 		}
 	
-	} while (option != 0);
+	} while (option != 0 );
 }
 
 void Add_pipe(App& app) {
@@ -251,7 +316,6 @@ void Load_data(App& app) {
 
 int main()
 {
-
 	redirect_output_wrapper cerr_out(std::cerr);
 	std::string time = std::format("{:%d_%m_%Y %H_%M_%OS}", std::chrono::system_clock::now());
 	std::ofstream logfile("log_" + time + ".txt");
@@ -291,7 +355,7 @@ int main()
 			Load_data(app);
 			break;
 		}
-	} while (variant != 0);
+	} while (variant != 0 );
 	return 0;
 }
 

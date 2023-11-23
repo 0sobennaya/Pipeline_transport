@@ -56,14 +56,32 @@ double Station::getEfficiency() const {
 }
 
 void Station::setName(std::string name) {
+	if (name.empty()) {
+		std::cout << "Error, name should be not empty" << std::endl;
+		return;
+	}
 	_station_name = name;
 }
+
 void Station::setNumWorkhopsInWork(int workshops_in_work) {
+	if (workshops_in_work < 0 || workshops_in_work > _num_workshop) {
+		std::cout << "Error, number of workshops in work should be between 0 & stated number of workshops " << std::endl;
+		return;
+	}
 	_num_workshop_in_work = workshops_in_work;
 }
-void Station::setNumWorkshops(int wokrshops) {
-	_num_workshop = wokrshops;
+
+void Station::setNumWorkshops(int workshops) {
+	if (workshops < 0 || workshops > 500 ) {
+		std::cout << "Error, number of workshops in work should be between 0 & 500 " << std::endl;
+		return;
+	}
+	_num_workshop = workshops;
 }
 void Station::setEfficiency(double efficiency) {
+	if (efficiency < 0 || efficiency > 100.0) {
+		std::cout << "Error, efficiency should be between 0.0 & 100.0 " << std::endl;
+		return;
+	}
 	_station_efficiency = efficiency;
 }

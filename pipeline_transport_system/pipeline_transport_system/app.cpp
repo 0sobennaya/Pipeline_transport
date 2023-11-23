@@ -43,7 +43,7 @@ void App::Print_data() {
 void App::Save() {
 	std::ofstream file(get_filename());
 	if (!file) {
-		std::cout << "Error";
+		std::cout << "Error: cannot open file" << std::endl; 
 		return;
 	}
 
@@ -148,31 +148,20 @@ void App::Delete_station(int id) {
 	_stations.erase(it);
 }
 
-std::vector<int> App::Search_by_status(bool status) {
-	std::vector<int> result;
-
-	for (const std::pair<int, Pipe> pair : _pipes) {
-		if (pair.second.getStatus() == status) {
-			result.push_back(pair.first);
-		}
-	}
-	return result;
-} 
-
-std::vector<int> App::Search_by_workshops(float low_percent, float high_percent) {
-	std::vector<int> result;
-	for (std::pair<int, Station> pair : _stations) {
-		float percent = getStationByID(pair.first).getNumWorkshopsInWork() * 100 / getStationByID(pair.first).getNumWorkshops();
-		if (percent >= low_percent && percent <= high_percent) {
-			result.push_back(pair.first);
-		}
-	}
-	return result;
-}
 
 const std::unordered_map<int, Pipe> App::getPipes() const {
 	return _pipes;
 }
 const std::unordered_map<int, Station> App::getStations() const {
+	return _stations;
+}
+
+template <>
+const std::unordered_map<int, Pipe>& App::getAll<Pipe>() const {
+	return _pipes;
+}
+
+template <>
+const std::unordered_map<int, Station>& App::getAll<Station>() const {
 	return _stations;
 }

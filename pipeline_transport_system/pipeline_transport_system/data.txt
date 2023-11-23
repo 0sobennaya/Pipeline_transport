@@ -1,35 +1,35 @@
 PIPES
-0
+1
 pipe 1
 12
 12
 1
 PIPES
-1
+2
 pipe #2
 345.5
 230
 0
 PIPES
-2
+3
 pipe #3
 1234
 789
 1
 STATIONS
-0
+1
 station #1
 120
 40
 25.3
 STATIONS
-1
+2
 station #2
 89
 88
 99.9
 STATIONS
-2
+3
 station #3
 454
 1

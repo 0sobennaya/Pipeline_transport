@@ -4,8 +4,10 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <string>
+#include <functional>
 
 #include "log.h"
+#include "app.h"
 
 template <typename Type>
 Type Check_enter(Type low, Type high) {
@@ -32,18 +34,17 @@ std::vector<int> Search_by_id(std::unordered_set<int>& ids, const std::unordered
 	return result;
 }
 
-template <typename Type>
-std::vector<int> Search_by_name(std::string& name, const std::unordered_map<int, Type>& objects) {
-	std::vector<int> result;
-	std::string::size_type n;
+template<typename Type>
+using Filter = std::function<bool(const Type& obj)>;
 
-	for (const std::pair<int, Type> pair : objects) {
-		n = pair.second.getName().find(name);
-		if (std::string::npos != n) {
-			result.push_back(pair.first);
+template <typename Type>
+static std::vector<int> search_by_filter(const App& app, const Filter<Type>& f) {
+	std::vector<int> result;
+	const auto& objects = app.getAll<Type>();
+	for (const auto& [id, obj] : objects) {
+		if (f(obj)) {
+			result.push_back(id);
 		}
 	}
-
 	return result;
 }
-

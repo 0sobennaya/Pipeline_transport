@@ -21,19 +21,23 @@ class App {
 		void Delete_pipe(int id);
 		void Delete_station(int id);
 
-		std::vector<int> Search_by_status(bool status);
-		std::vector<int> Search_by_workshops(float low_percent, float high_percent);
-
+		template<typename Type>
+		const std::unordered_map<int, Type>& getAll() const;
 
 		const std::unordered_map<int, Pipe> getPipes() const;
 		const std::unordered_map<int, Station> getStations() const;
 
 		
 	private:
-		unsigned int _PipeID = 0;
-		unsigned int _StationID = 0;
+		unsigned int _PipeID = 1;
+		unsigned int _StationID = 1;
 
 		std::unordered_map<int, Pipe> _pipes;
 		std::unordered_map<int, Station> _stations;
 };
 
+template <>
+const std::unordered_map<int, Pipe>& App::getAll<Pipe>() const;
+
+template <>
+const std::unordered_map<int, Station>& App::getAll<Station>() const;
