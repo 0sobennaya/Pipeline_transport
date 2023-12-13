@@ -6,6 +6,21 @@
 #include "utilities.h"
 #include "pipe.h"
 
+
+void Pipe::Add_pipe_without_diameter(int diameter) {
+	std::cout << "Add the pipe name\n";
+	std::cin >> std::ws;
+	INPUT_LINE(std::cin, _pipe_name);
+
+	std::cout << "Add the pipe length(km)\n";
+	_pipe_length = Check_enter(1.0, 10000.0);
+
+	_pipe_diameter = diameter;
+
+	std::cout << "Add the pipe status (1 - works, 0 - in repair)\n";
+	_status = Check_enter(0, 1);
+}
+
 void Pipe::Add_pipe() {
 	std::cout << "Add the pipe name\n";
 	std::cin >> std::ws;
@@ -15,7 +30,16 @@ void Pipe::Add_pipe() {
 	_pipe_length = Check_enter(1.0, 10000.0);
 
 	std::cout << "Add the pipe diameter(mm)\n";
-	_pipe_diameter = Check_enter(10, 5000);
+	int diameter = 0;
+	std::cin >> diameter;
+	std::cerr << diameter << std::endl;
+	while (diameter != 500 && diameter != 700 && diameter != 1000 && diameter != 1400) {
+		std::cout << "Diameter should be 500,700,1000 or 1400" << std::endl;
+		std::cin.ignore(1000, '\n');
+		std::cin >> diameter;
+		std::cerr << diameter << std::endl;
+	}
+	_pipe_diameter = diameter;
 
 	std::cout << "Add the pipe status (1 - works, 0 - in repair)\n";
 	_status = Check_enter(0, 1);

@@ -14,6 +14,7 @@
 #include "station.h"
 #include "utilities.h"
 #include "log.h"
+#include "graph.h"
 
 void print_menu() {
 	std::cout << "Choose an action:\n";
@@ -23,8 +24,9 @@ void print_menu() {
 	std::cout << "3. Show all objects\n";
 	std::cout << "4. Search pipes\n";
 	std::cout << "5. Search stations\n";
-	std::cout << "6. Save the info\n";
-	std::cout << "7. Download the info\n";
+	std::cout << "6. Graph\n";
+	std::cout << "7. Save the info\n";
+	std::cout << "8. Download the info\n";
 	std::cout << "0. Exit\n";
 	std::cout << ">\n";
 }
@@ -58,6 +60,142 @@ void print_search_menu() {
 	std::cout << "0. Cancel\n";
 	std::cout << ">\n";
 }
+
+void print_graph_menu() {
+	std::cout << "Choose an action:\n";
+	std::cout << "-----------------------\n";
+	std::cout << "1. Add edge\n";
+	std::cout << "2. View all edges\n";
+	std::cout << "3. Delete edge\n";
+	std::cout << "4. Clear graph" << std::endl;
+	std::cout << "5. Topological sort" << std::endl;
+	std::cout << "0. Cancel\n";
+	std::cout << ">\n";
+}
+
+std::vector<int> search_pipe_by_diameter(App& app,int diameter) {
+	std::vector<int> ids = search_by_filter<Pipe>(app,
+		[diameter](const Pipe& pipe)
+		{return pipe.getDiameter() == diameter; });
+	return ids;
+}
+
+
+void Add_edge(App& app) {
+	if (app.getStations().empty()) {
+		std::cout << "There are no stations" << std::endl;
+		return;
+	}
+	std::cout << "Enter station source: ";
+	int start = Check_enter(0, app.getStationID());
+
+	std::cout << "Enter station sink: ";
+	int end = Check_enter(0, app.getStationID());
+	if (start == end) {
+		std::cout << "Source should be != sink" << std::endl;
+		return;
+	}
+	if (!app.getStations().contains(start) || !app.getStations().contains(end)) {
+		std::cout << "There are no stations with this ids" << std::endl;
+		return;
+	}
+
+	std::cout << "Enter diameter of pipe: ";
+	int diameter = 0;
+	std::cin >> diameter;
+	while (diameter != 500 && diameter != 700 && diameter != 1000 && diameter != 1400) {
+		std::cin.ignore(1000, '\n');
+		std::cout << "Diameter should be 500, 700, 1000 or 1400" << std::endl;
+		std::cin >> diameter;
+	}
+	auto ids = search_pipe_by_diameter(app, diameter);
+	std::vector<int> free_pipes = app.getFreePipes(ids);
+	if (free_pipes.empty()) {
+		std::cout << "Do you want add new pipe? (yes or no) " << std::endl;
+
+		std::string s = "";
+		std::cin >> s;
+		while (s != "yes" && s != "no") {
+			std::cout << "The answer should be yes or no" << std::endl;
+			std::cin >> s;
+		}
+		if (s == "yes") {
+			app.Add_pipe_withiout_diameter(diameter);
+			ids = search_pipe_by_diameter(app, diameter);
+			free_pipes = app.getFreePipes(ids);
+		}
+		else {
+			return;
+		}
+	}
+	std::cout << "Found pipes with diameter = " << diameter << "\n" << std::endl;
+	app.Print_free_pipes(free_pipes);
+
+	std::cout << "\nEnter id pipe: ";
+	int id = -1;
+	bool status = false;
+	while (!status) {
+		std::cout << "The id number must be from the list" << std::endl;
+		id = Check_enter(0, app.getPipeID());
+		//status = find_id_in_array(id, free_pipes);
+		for (int i = 0; i < free_pipes.size(); i++) {
+			if (free_pipes[i] == id) {
+				status = true;
+			}
+		}
+	}
+
+	app.Add_edge(id, start, end);
+}
+
+void Delete_edge(App& app) {
+	std::cout << "Enter edge id: " << std::endl;
+	int id = Check_enter(0, app.getStationID());
+	app.Delete_edge(id);
+}
+
+void View_all_edges(App& app) {
+	app.Print_edges();
+}
+
+void work_with_graph_menu(App& app) {
+	int option = 0;
+	
+	do {
+		print_graph_menu();
+		option = Check_enter(0, 5);
+		switch (option)
+		{
+		case 1:
+			Add_edge(app);
+			break;
+		case 2:
+			View_all_edges(app);
+			break;
+		case 3:
+			Delete_edge(app);
+		case 4: {
+			app.getEdges().clear();
+			std::cout << "Graph is clear" << std::endl;
+			break;
+		}
+		case 5: {
+			Graph graph(app);
+			std::vector<int> result = graph.topologicalSort();
+			for (int i = 0; i < result.size(); i++) {
+				std::cout << result[i] << " ";
+			}
+			std::cout << std::endl;
+		}
+		default:
+			break;
+		}
+		
+	} while (option != 0);
+}
+
+
+
 
 std::unordered_set<int> Input_sequence() {
 
@@ -295,7 +433,6 @@ void Add_station(App& app) {
 }
 
 
-
 void View_all(App& app) {
 	if (app.Data_emptpy()) {
 		std::cout << "Data is empty" << std::endl;
@@ -330,7 +467,7 @@ int main()
 	do {
 		print_menu();
 
-		variant = Check_enter(0, 7);
+		variant = Check_enter(0, 8);
 
 		switch (variant) {
 		case 1:
@@ -349,12 +486,16 @@ int main()
 			search_station_menu(app);
 			break;
 		case 6:
-			Save_data(app);
+			work_with_graph_menu(app);
 			break;
 		case 7:
+			Save_data(app);
+			break;
+		case 8:
 			Load_data(app);
 			break;
 		}
+
 	} while (variant != 0 );
 	return 0;
 }

@@ -130,12 +130,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="graph.cpp" />
     <ClCompile Include="pipe.cpp" />
     <ClCompile Include="pipeline_transport_system.cpp" />
     <ClCompile Include="station.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
+    <ClInclude Include="graph.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="pipe.h" />
     <ClInclude Include="station.h" />

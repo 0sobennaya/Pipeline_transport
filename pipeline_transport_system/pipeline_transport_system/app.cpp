@@ -18,6 +18,12 @@ void App::Add_pipe() {
 	_pipes.insert({ _PipeID++, pipe });
 }
 
+void App::Add_pipe_withiout_diameter(int diameter) {
+	Pipe pipe;
+	pipe.Add_pipe_without_diameter(diameter);
+	_pipes.insert({ _PipeID++,pipe });
+}
+
 void App::Add_station() {
 	Station station;
 	station.Add_station();
@@ -58,6 +64,13 @@ void App::Save() {
 		file << pair.first << std::endl;
 		pair.second.Import_station(file);
 	}
+
+	for (auto& [id, edge] : _edges) {
+		file << "EDGE" << "\n";
+		file << id << std::endl;
+		file << edge.start << std::endl;
+		file << edge.end << std::endl;
+	}
 	
 	file << "END";
 
@@ -94,6 +107,12 @@ void App::Load(){
 				station.Export_station(file);
 				_stations.insert({ id, station });
 				_StationID = std::max(_StationID, id) + 1;
+			}
+			else if (s == "EDGE") {
+				Edge edge;
+				file >> id;
+				file >> edge.start >> edge.end;
+				_edges.insert({ id,edge });
 			}
 			else {
 				std::cout<<"Unexpected error"<<std::endl;
@@ -136,6 +155,9 @@ void App::Delete_pipe(int id) {
 		std::cout << "Error: pipe is not found" << std::endl;
 		return;
 	}
+	if (_edges.contains(id)) {
+		_edges.erase(id);
+	}
 	_pipes.erase(it);
 }
 
@@ -144,6 +166,16 @@ void App::Delete_station(int id) {
 	if (it == _stations.end()) {
 		std::cout << "Error: station is not found" << std::endl;
 		return;
+	}
+	std::vector<int> edges;
+	for (auto& [edge_id, edge] : _edges) {
+		if (edge.start == id || edge.end == id) {
+			edges.push_back(edge_id);
+		}
+	}
+
+	for (int id : edges) {
+		Delete_edge(id);
 	}
 	_stations.erase(it);
 }

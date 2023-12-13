@@ -7,6 +7,7 @@ class Pipe {
 public:
 
 	void Add_pipe();
+	void Add_pipe_without_diameter(int diameter);
 	
 	void Import_pipe(std::ostream& out);
 	void Export_pipe(std::ifstream& in);
