@@ -69,6 +69,8 @@ void print_graph_menu() {
 	std::cout << "3. Delete edge\n";
 	std::cout << "4. Clear graph" << std::endl;
 	std::cout << "5. Topological sort" << std::endl;
+	std::cout << "6. Shortest path" << std::endl;
+	std::cout << "7. Max flow" << std::endl;
 	std::cout << "0. Cancel\n";
 	std::cout << ">\n";
 }
@@ -163,7 +165,7 @@ void work_with_graph_menu(App& app) {
 	
 	do {
 		print_graph_menu();
-		option = Check_enter(0, 5);
+		option = Check_enter(0, 7);
 		switch (option)
 		{
 		case 1:
@@ -174,6 +176,7 @@ void work_with_graph_menu(App& app) {
 			break;
 		case 3:
 			Delete_edge(app);
+			break;
 		case 4: {
 			app.getEdges().clear();
 			std::cout << "Graph is clear" << std::endl;
@@ -186,6 +189,25 @@ void work_with_graph_menu(App& app) {
 				std::cout << result[i] << " ";
 			}
 			std::cout << std::endl;
+		}
+		case 6:{
+			Graph graph(app);
+			std::cout << "Enter start station: ";
+			int start = Check_enter<int>(0, app.getStations().size());
+			std::cout << "Enter end station: ";
+			int end = Check_enter<int>(0, app.getStations().size());
+			std::cout << "Shortest path from " << start << " to " << end << " = " << graph.shortest_path(app, start, end) << std::endl;
+
+			break;
+		}
+		case 7:{
+			Graph graph(app);
+			std::cout << "Enter start station: ";
+			int start = Check_enter<int>(0, app.getStations().size());
+			std::cout << "Enter end station: ";
+			int end = Check_enter<int>(0, app.getStations().size());
+			std::cout << "Max flow from " << start << " to " << end << " = " << graph.dinitz_algorithm(app,start,end) << std::endl;
+			break;
 		}
 		default:
 			break;

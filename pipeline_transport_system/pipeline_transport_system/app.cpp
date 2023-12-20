@@ -181,10 +181,10 @@ void App::Delete_station(int id) {
 }
 
 
-const std::unordered_map<int, Pipe> App::getPipes() const {
+std::unordered_map<int, Pipe> App::getPipes() const {
 	return _pipes;
 }
-const std::unordered_map<int, Station> App::getStations() const {
+std::unordered_map<int, Station> App::getStations() const {
 	return _stations;
 }
 
@@ -196,4 +196,67 @@ const std::unordered_map<int, Pipe>& App::getAll<Pipe>() const {
 template <>
 const std::unordered_map<int, Station>& App::getAll<Station>() const {
 	return _stations;
+}
+
+void App::Add_edge(int pipe_id, int start, int end) {
+	double capacity = _pipes.at(pipe_id).getCapacity();
+	Edge edge{ start,end , 0.0 , capacity };
+	_edges.insert({ pipe_id,edge });
+}
+
+void App::Delete_edge(int id) {
+	auto it = _edges.find(id);
+	if (it == _edges.end()) {
+		std::cout << "There are no edges with this id" << std::endl;
+		return;
+	}
+	_edges.erase(id);
+}
+
+void App::Print_edges() {
+	if (!_edges.empty()) {
+		for (auto& [id, edge] : _edges) {
+			std::cout << "Edge ID = " << id << std::endl;
+			std::cout << "Source : " << edge.start << "   Sink : " << edge.end << std::endl;
+			std::cout << "Capacity : " << edge.capacity << std::endl;
+			std::cout << std::endl;
+		}
+	}
+	else {
+		std::cout << "There are no edges" << std::endl;
+
+	}
+}
+
+std::vector<int> App::getFreePipes(std::vector<int>& ids) {
+	std::vector<int> free_pipes;
+	for (int id : ids) {
+		if (!_edges.contains(id)) {
+			free_pipes.push_back(id);
+		}
+	}
+	return free_pipes;
+}
+
+void App::Print_free_pipes(std::vector<int>& ids) {
+	for (int id : ids) {
+		auto it = _pipes.find(id);
+		if (it != _pipes.end()) {
+			std::cout << "ID: " << it->first << std::endl;
+			Pipe pipe = it->second;
+			pipe.Print_pipe();
+
+		}
+	}
+}
+
+std::unordered_map<int, Edge>& App::getEdges() {
+	return _edges;
+}
+
+const int App::getPipeID() const {
+	return _PipeID;
+}
+const int App::getStationID() const {
+	return _StationID;
 }

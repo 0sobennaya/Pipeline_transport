@@ -81,6 +81,19 @@ double Pipe::getLength() const {
 	return _pipe_length;
 }
 
+double Pipe::getWeight() const {
+	return _status ? _pipe_length : 0.0;
+}
+double Pipe::getCapacity() {
+	int lenght = _pipe_length;
+	double diameter = _pipe_diameter / 1000.0;
+	int V = 10;
+
+	double capacity = (V * 3.14 * diameter * diameter) * lenght / 4;
+
+	return (_status ? capacity : 0.0);
+}
+
 void Pipe::setStatus(bool status) {
 	if (status != 0 && status != 1) {
 		std::cout << "Error, status should be 1 (works) or 0 (in repair)" << std::endl;

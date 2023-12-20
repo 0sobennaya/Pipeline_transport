@@ -19,6 +19,10 @@ public:
 	int getDiameter() const;
 	double getLength() const;
 
+	double getWeight() const;
+
+	double getCapacity();
+
 	void setName(std::string name);
 	void setStatus(bool status);
 	void setDiameter(int diameter);
